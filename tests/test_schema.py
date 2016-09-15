@@ -1048,6 +1048,11 @@ class TestErrorHandler:
         with pytest.raises(CustomError):
             MySchema().dump(user)
 
+    def test_dump_with_custom_error_handler_and_strict(self, user):
+        user.age = 'notavalidage'
+        with pytest.raises(CustomError):
+            MySchema(strict=True).dump(user)
+
     def test_load_with_custom_error_handler(self):
         in_data = {'email': 'invalid'}
 
@@ -1356,6 +1361,21 @@ class TestNestedSchema:
             _, errors = BlogSchema(strict=True).load(
                 {'title': "Monty's blog", 'user': {'name': 'Monty', 'email': 'foo'}}
             )
+        assert 'email' in str(excinfo)
+
+    def test_nested_dump_errors(self, blog):
+        blog.user.email = "foo"
+        _, errors = BlogSchema().dump(blog)
+        assert "email" in errors['user']
+        assert len(errors['user']['email']) == 1
+        assert 'Not a valid email address.' in errors['user']['email'][0]
+        # No problems with collaborators
+        assert "collaborators" not in errors
+
+    def test_nested_dump_strict(self, blog):
+        blog.user.email = "foo"
+        with pytest.raises(ValidationError) as excinfo:
+            _, errors = BlogSchema(strict=True).dump(blog)
         assert 'email' in str(excinfo)
 
     def test_nested_method_field(self, blog):

@@ -1,6 +1,15 @@
 Changelog
 ---------
 
+2.10.1 (2016-09-14)
++++++++++++++++++++
+
+Bug fixes:
+
+- Fix behavior when using ``validate.Equal(False)`` (:issue:`484`). Thanks :user:`pktangyue` for reporting and thanks :user:`tuukkamustonen` for the fix.
+- Fix ``strict`` behavior when errors are raised in ``pre_dump``/``post_dump`` processors (:issue:`521`). Thanks :user:`tvuotila` for the catch and patch.
+- Fix validation of nested fields on dumping (:issue:`528`). Thanks again :user:`tvuotila`.
+
 2.10.0 (2016-09-05)
 +++++++++++++++++++
 
